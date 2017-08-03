@@ -33,6 +33,54 @@
 
     <!-- Views -->
 
+    <div class="popup popup-about">
+      <div class="content-block">
+        <div class="row no-gutter pushtop">
+          <div class="col-10"></div>
+          <div class="col-80">
+            <h1 style="text-align: center" id="uploadTitle">
+                <span style="width:42px; height:42px; margin-top: 20vh" class="preloader"></span><br />
+                Uploading...
+              </h1>
+
+              <h3 id="uploadBody1">
+                We are running your clip through our <b>neural net</b> now. How exciting!
+              </h3>
+
+              <h3 id="uploadBody2">
+                How long this takes depends on your internet connection, but it should be fairly fast regardless.
+              </h3>
+
+              <div class="row no-gutter hiddenEmoji" style="display: none; text-align: center">
+                <h3>😄 <span id="happy"></span>%</h3>
+                <h3>😢 <span id="sad"></span>%</h3>
+                <h3>😐 <span id="neutral"></span>%</h3>
+                <h3>😠 <span id="angry"></span>%</h3>
+                <h3>😨 <span id="fear"></span>%</h3>
+              </div>
+
+              <div class="list-block inset hiddenEmoji" style="display: none">
+                <ul>
+                  <li>
+                    <a href="#" class="item-link list-button">Delete</a>
+                  </li>
+                  <li>
+                    <a href="#" class="item-link list-button">Listen</a>
+                  </li>
+                  <li>
+                    <a href="#" class="item-link list-button" onclick="myApp.closeModal()">Finish</a>
+                  </li>
+                  <li>
+                    <a href="#" class="item-link list-button" onclick="myApp.closeModal()">Community</a>
+                  </li>
+                </ul>
+              </div>
+          </div>
+          <div class="col-10"></div>
+        </div>
+      </div>
+    </div>
+
     <div class="views">
       <div class="view view-main">
         <div class="navbar">
@@ -117,11 +165,14 @@
       $( "#time" ).progressbar({
         value: 100
       });
+
+      myApp.popup('.popup-about');
     });
   });
 
   // Init audio recorder.
   var audioContext = new AudioContext;
+  var microphone;
 
   if (audioContext.createScriptProcessor == null) {
     audioContext.createScriptProcessor = audioContext.createJavaScriptNode;
@@ -130,17 +181,40 @@
   // Actually set up the recorder.
 
   var mixer = audioContext.createGain();
-  mixer.connect(audioContext.destination);
+  var recorder;
 
-  var recorder = new WebAudioRecorder(mixer, {
-    'workerDir:': 'temp/',
-  });
+  // obtaining microphone input
+  function getMic() {
+    if (microphone == null)
+      navigator.getUserMedia({ audio: true },
+        function(stream) {
+          microphone = audioContext.createMediaStreamSource(stream);
+          microphone.connect(mixer);
 
-  recorder.setEncoding("mp3");
-  recorder.setOptions({
-    'timelimit': 30,
-    'encodeAfterRecord': true,
-  });
+          recorder = new WebAudioRecorder(microphone, {
+            'workerDir:': 'temp/',
+          });
+
+          mixer.gain.value = 0;
+          mixer.connect(audioContext.destination);
+
+          recorder.setEncoding("mp3");
+          recorder.setOptions({
+            'timelimit': 30,
+            'encodeAfterRecord': true,
+            'bufferSize': 16384,
+          });
+
+          recorder.onComplete = function(rec, blob) {
+            saveRecording(blob, "mp3");
+          };
+        },
+        function(error) {
+          console.log("goofed.");
+        });
+  }
+
+  getMic();
 
   function record() {
     if (recorder.isRecording()) {
@@ -152,6 +226,8 @@
       });
 
       $("#recimg").attr('src', "static/img/micoff.png");
+
+      myApp.popup('.popup-about');
     } else {
       recorder.startRecording();
       timer.start(timelimit);
@@ -161,8 +237,37 @@
     }
   }
 
-  recorder.onComplete = function(rec, blob) {
-    alert("Complete.");
+  function saveRecording(blob, enc) {
+    var fd = new FormData();
+    fd.append('clip', blob);
+    console.log(blob);
+
+    $.ajax({
+      type: 'POST',
+      url: 'http://localhost:8000/recordings/',
+      data: fd,
+      processData: false,
+      contentType: false,
+      beforeSend: function (xhr) {
+        xhr.setRequestHeader('Authorization',
+                             "Basic " + btoa("paced:test_server")); // insec
+      },
+      success: function(res) {
+        console.log(res);
+        // myApp.closeModal('.popup-about');
+        $("#uploadTitle").html("Uploaded!");
+        $("#uploadBody1").html("We're done analysing your clip. As per our <a href='//example.com'>Privacy Policy</a>, we will not leak or post this to our servers without your consent. Here's what we found!");
+        $("#uploadBody2").html("We think you were talking about <i>" + res["categories"] + "</i>. You can always edit this if this is wrong.");
+
+        $(".hiddenEmoji").css("display", "block");
+
+        $("#happy").html(Math.round(parseFloat(res["happy"])));
+        $("#sad").html(Math.round(parseFloat(res["sad"])));
+        $("#neutral").html(Math.round(parseFloat(res["neutral"])));
+        $("#fear").html(Math.round(parseFloat(res["fear"])));
+        $("#angry").html(Math.round(parseFloat(res["angry"])));
+      }
+    });
   };
 
 </script>
