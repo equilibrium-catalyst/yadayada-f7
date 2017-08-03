@@ -8,7 +8,8 @@
     <!-- Left panel with reveal effect-->
     <div class="panel panel-left panel-reveal">
       <div class="content-block">
-        <p>Left panel content goes here</p>
+
+        <a href="about">About app</a>
       </div>
     </div>
 
@@ -27,8 +28,14 @@
         <div class="pages navbar-through toolbar-through">
           <div data-page="index" class="page">
             <div class="page-content">
-              <p>Page content goes here</p>
-              <a href="about">About app</a>
+              <div class="row no-gutter pushtop">
+                <div class="col-10"></div>
+                <div class="col-80">
+                  <div id="clock"
+                       class="flipclock-center"></div>
+                </div>
+                <div class="col-10"></div>
+              </div>
             </div>
           </div>
         </div>
@@ -42,4 +49,14 @@
       </div>
     </div>
 
+{% endblock %}
+{% block extrascripts %}
+<script>
+  var clock = $('#clock').FlipClock(30, {
+    'autoStart': false,
+    'countdown': true,
+    'clockFace': 'MinuteCounter',
+    'minimumDigits': 2,
+  });
+</script>
 {% endblock %}

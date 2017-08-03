@@ -1,0 +1,7 @@
+.flipclock-center {
+    text-align: center !important;
+    position: relative;
+    width: auto;
+    margin: 2em;
+    display: inline-block;
+}
