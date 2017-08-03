@@ -17,6 +17,12 @@ def home():
     return render_template("pages/level1.jinja.html")
 
 
+@app.route('/about', methods=['GET'])
+def about():
+    """Standard page redirect."""
+    return render_template("pages/about.jinja.html")
+
+
 @app.route('/sitemap.xml', methods=['GET'])
 def sitemap():
     """Contact forms."""
