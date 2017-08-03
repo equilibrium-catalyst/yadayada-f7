@@ -6,13 +6,28 @@
     <!-- Panels overlay-->
     <div class="panel-overlay"></div>
     <!-- Left panel with reveal effect-->
-    <div class="panel panel-left panel-reveal">
-      <div class="content-block">
+    <div class="panel panel-left panel-reveal" style="background: white">
+      <div class="content-block" style="text-align: center">
         <img src="{{ url_for('static', filename='img/logo.png') }}"
-             class="logo "/>
+             class="logo "
+             style="padding-top: 0 !important"/>
         <p>
           You are using YadaYada v0.01a.
         </p>
+        <h2>Hey, <b>Catalyst</b>!</h2>
+        <div class="list-block inset">
+          <ul>
+            <li>
+              <a href="#" class="item-link list-button">My Profile</a>
+            </li>
+            <li>
+              <a href="#" class="item-link list-button">My Public Yadas</a>
+            </li>
+            <li>
+              <a href="#" class="item-link list-button">Log Out</a>
+            </li>
+          </ul>
+        </div>
       </div>
     </div>
 
