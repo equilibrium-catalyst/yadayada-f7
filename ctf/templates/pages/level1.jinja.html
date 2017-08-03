@@ -1,0 +1,35 @@
+{% extends 'base/base.jinja.html' %}
+{% block content %}
+
+<div class="col col-xs-2"></div>
+<div class="col col-xs-8">
+  <div class="text-center">
+    <h1>Level 1</h1>
+    <h2>What is HTML?</h2>
+  </div>
+
+  <p>
+    The developer is very new to web development, especially with security. They copied an example for a login form from the internet but didn't bother to change anything.
+  </p>
+
+  <div class="col col-xs-3"></div>
+  <div class="col col-xs-6">
+    <!-- In case I forget, the password is "Hunter2" -->
+    <form class="form" action="/level1/" method="POST">
+      <div class="form-item" style="margin: 1em">
+        <input id="pass" name="pass"
+               required="true" type="password"
+               placeholder="Password?" class="form-control"/>
+      </div>
+
+      <div class="form-item"  style="margin: 1em">
+        <button class="button round outline big form-control"
+                type="submit">
+          Login
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+
+{% include 'base/head.jinja.html' %}
+
+<body>
+  <div class="container">
+    <div class="row">
+      {% block content %}
+      {% endblock %}
+    </div>
+  </div>
+
+  {% include 'base/footer.jinja.html' %}
+
+  {% block extrascripts %}
+  {% endblock %}
+</body>
+</html>
