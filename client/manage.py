@@ -14,7 +14,7 @@ app = Flask(__name__)
 @app.route('/', methods=['GET'])
 def home():
     """Standard page redirect."""
-    return redirect("/level1/", code=301)
+    return render_template("pages/level1.jinja.html")
 
 
 @app.route('/sitemap.xml', methods=['GET'])
