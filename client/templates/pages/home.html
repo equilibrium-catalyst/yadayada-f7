@@ -8,8 +8,11 @@
     <!-- Left panel with reveal effect-->
     <div class="panel panel-left panel-reveal">
       <div class="content-block">
-
-        <a href="about">About app</a>
+        <img src="{{ url_for('static', filename='img/logo.png') }}"
+             class="logo "/>
+        <p>
+          You are using YadaYada v0.01a.
+        </p>
       </div>
     </div>
 
@@ -43,6 +46,11 @@
                     <a href="#" onclick="record()">
                       <img id="recimg"
                            src="{{ url_for('static', filename='img/micoff.png') }}"
+                           class="recorder" />
+                    </a>
+                    <a href="/community/">
+                      <img id="comm"
+                           src="{{ url_for('static', filename='img/profiles.png') }}"
                            class="recorder" />
                     </a>
                   </div>

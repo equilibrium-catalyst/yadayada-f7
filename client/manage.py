@@ -14,13 +14,13 @@ app = Flask(__name__)
 @app.route('/', methods=['GET'])
 def home():
     """Standard page redirect."""
-    return render_template("pages/level1.jinja.html")
+    return render_template("pages/home.html")
 
 
-@app.route('/about', methods=['GET'])
+@app.route('/community/', methods=['GET'])
 def about():
     """Standard page redirect."""
-    return render_template("pages/about.jinja.html")
+    return render_template("pages/community.html")
 
 
 @app.route('/sitemap.xml', methods=['GET'])
