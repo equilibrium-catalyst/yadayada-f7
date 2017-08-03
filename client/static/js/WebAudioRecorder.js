@@ -16,9 +16,9 @@
   };
 
   var WORKER_FILE = {
-    wav: "WebAudioRecorderWav.js",
-    ogg: "WebAudioRecorderOgg.js",
-    mp3: "WebAudioRecorderMp3.js"
+    wav: "static/js/WebAudioRecorderWav.js",
+    ogg: "static/js/WebAudioRecorderOgg.js",
+    mp3: "static/js/WebAudioRecorderMp3.js"
   };
 
   // default configs

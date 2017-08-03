@@ -31,8 +31,22 @@
               <div class="row no-gutter pushtop">
                 <div class="col-10"></div>
                 <div class="col-80">
-                  <div id="clock"
-                       class="flipclock-center"></div>
+                  <img src="{{ url_for('static', filename='img/logo.png') }}"
+                       class="logo "/>
+                  <h1 style="text-align: center">
+                    Speak your mind.
+                  </h1>
+
+                  <div id="time"></div>
+
+                  <div class="centerblock" style="text-align: center; margin-top: 4vh">
+                    <a href="#" onclick="record()">
+                      <img id="recimg"
+                           src="{{ url_for('static', filename='img/micoff.png') }}"
+                           class="recorder" />
+                    </a>
+                  </div>
+
                 </div>
                 <div class="col-10"></div>
               </div>
@@ -42,8 +56,6 @@
         <!-- Bottom Toolbar-->
         <div class="toolbar">
           <div class="toolbar-inner">
-            <!-- Toolbar links -->
-            <a href="#" class="link">Link</a>
           </div>
         </div>
       </div>
@@ -52,11 +64,83 @@
 {% endblock %}
 {% block extrascripts %}
 <script>
-  var clock = $('#clock').FlipClock(30, {
-    'autoStart': false,
-    'countdown': true,
-    'clockFace': 'MinuteCounter',
-    'minimumDigits': 2,
+  // Init clock.
+  var timer = new Timer();
+  var timelimit = 20; // in seconds
+  var timeleft = timelimit;
+
+  $( function() {
+    $( "#time" ).progressbar({
+      value: 0
+    });
   });
+
+  timer.on('tick', function() {
+    timeleft = 100 - (100 * (timer.getDuration()) / (timelimit * 1000));
+
+    $( function() {
+      $( "#time" ).progressbar({
+        value: timeleft
+      });
+    });
+  });
+
+  timer.on('end', function() {
+    $( function() {
+      // Time ran out.
+      recorder.finishRecording();
+      $("#recimg").attr('src', "static/img/micoff.png");
+
+      $( "#time" ).progressbar({
+        value: 100
+      });
+    });
+  });
+
+  // Init audio recorder.
+  var audioContext = new AudioContext;
+
+  if (audioContext.createScriptProcessor == null) {
+    audioContext.createScriptProcessor = audioContext.createJavaScriptNode;
+  }
+
+  // Actually set up the recorder.
+
+  var mixer = audioContext.createGain();
+  mixer.connect(audioContext.destination);
+
+  var recorder = new WebAudioRecorder(mixer, {
+    'workerDir:': 'temp/',
+  });
+
+  recorder.setEncoding("mp3");
+  recorder.setOptions({
+    'timelimit': 30,
+    'encodeAfterRecord': true,
+  });
+
+  function record() {
+    if (recorder.isRecording()) {
+      recorder.finishRecording();
+      timer.pause();
+
+      $( "#time" ).progressbar({
+        value: 100
+      });
+
+      $("#recimg").attr('src', "static/img/micoff.png");
+    } else {
+      recorder.startRecording();
+      timer.start(timelimit);
+      timeleft = timelimit;
+
+      $("#recimg").attr('src', "static/img/micon.png");
+    }
+  }
+
+  recorder.onComplete = function(rec, blob) {
+    alert("Complete.");
+  };
+
 </script>
 {% endblock %}
