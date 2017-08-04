@@ -16,7 +16,7 @@
   <div data-page="about" class="page">
     <div class="page-content">
 
-      {% for i in data['stuff'] %}
+      {% for i in data['stuff'][::-1] %}
 
       <div class="card">
         <div class="card-header">{{ i.categories }}</div>
