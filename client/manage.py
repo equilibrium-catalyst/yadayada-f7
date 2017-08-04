@@ -2,6 +2,7 @@
 
 import os
 
+import requests
 from flask import (Flask, make_response, redirect, render_template, request,
                    send_from_directory)
 
@@ -20,7 +21,12 @@ def home():
 @app.route('/community/', methods=['GET'])
 def about():
     """Standard page redirect."""
-    return render_template("pages/community.html")
+    r = requests.get(url='http://localhost:8000/recordings/?format=json')
+
+    for i in r.json():
+        print("Line")
+
+    return render_template("pages/community.html", data={'stuff': r.json()})
 
 
 @app.route('/sitemap.xml', methods=['GET'])
